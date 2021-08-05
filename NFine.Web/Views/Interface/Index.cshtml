@@ -1,0 +1,203 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+
+<style type="text/css">
+    ul.leftmargin_tree_home {
+        line-height: 1;
+        font-family: "Droid Sans", sans-serif;
+        max-width: 960px;
+        margin-left: 5%;
+        margin-right: auto;
+    }
+
+
+    .search {
+        display: block;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 6px 8px;
+        font-size: 0.9em;
+        color: white;
+        background-color: #547f00;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -o-border-radius: 4px;
+        -ms-border-radius: 4px;
+        -khtml-border-radius: 4px;
+        border-radius: 4px;
+    }
+
+    element.style {
+    }
+
+    .swagger-section #header form#api_selector .input a#explore:hover {
+        background-color: #547f00;
+    }
+
+    .swagger-section #header form#api_selector .input a#search_a {
+        display: block;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 6px 8px;
+        font-size: 0.9em;
+        color: white;
+        background-color: #547f00;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -o-border-radius: 4px;
+        -ms-border-radius: 4px;
+        -khtml-border-radius: 4px;
+        border-radius: 4px;
+    }
+
+</style>
+<script type="text/javascript">
+    $(function () {
+
+       
+
+
+    
+        firstModule();
+       // myfunction();
+
+
+    });
+
+
+    function firstModule() {
+
+        //模块信息
+        $.ajax({
+            url: "/ModulesManage/ModulesInfo/GetAllModulesInfo",
+            data: { keyValue: "" },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                //$("#form1").formSerialize(data);
+                //页面渲染卡顿的话需要异步回调
+               // $("#modules_dd").append("<dd><a href='javascript:void (0);' onclick='alert('22')'>跳转2</a></dd>");
+                if (!!data) {
+                    for (var i = 0; i < data.rows.length; i++) {
+                        $("#modules_dd").append("<dd><a href='javascript:void (0);' onclick='controlInfo(" + data.rows[i].TABID+")'>" + data.rows[i].ModuleName+"</a></dd>");
+                    }
+                    controlInfo(data.rows[0].TABID);
+                }
+            }
+        });
+       
+    }
+
+
+    //模块下控制器路由信息
+    function controlInfo(moduleID) {
+
+
+        var url = window.location.search.match(/url=([^&]+)/);
+        if (url && url.length > 1) {
+            url = decodeURIComponent(url[1]);
+        } else {
+         url = "/ControllerManage/TB_/GetControllerInfo?keyValue=" + moduleID;
+         // url ="http://localhost:1852/Configs/demo1.json";
+        }
+        window.swaggerUi = new SwaggerUi({
+            url: url,
+            dom_id: "swagger-ui-container",
+            supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+            onComplete: function (swaggerApi, swaggerUi) {
+                window.SwaggerTranslator.translate();
+                if (typeof initOAuth == "function") {
+                    initOAuth({
+                        clientId: "your-client-id",
+                        realm: "your-realms",
+                        appName: "your-app-name"
+                    });
+                }
+
+                $('pre code').each(function (i, e) {
+                    hljs.highlightBlock(e)
+                });
+
+                addApiKeyAuthorization();
+            },
+            onFailure: function (data) {
+                log("Unable to Load SwaggerUI");
+            },
+            docExpansion: "none",
+            apisSorter: "alpha",
+            showRequestHeaders: false
+        });
+
+        function addApiKeyAuthorization() {
+            var key = encodeURIComponent($('#input_apiKey')[0].value);
+            if (key && key.trim() != "") {
+                var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
+                window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
+                log("added key " + key);
+            }
+        }
+
+        $('#input_apiKey').change(addApiKeyAuthorization);
+
+        // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
+        /*
+        var apiKey = "myApiKeyXXXX123456789";
+        $('#input_apiKey').val(apiKey);
+        */
+
+        window.swaggerUi.load();
+
+        //function log() {
+        //    if ('console' in window) {
+        //        console.log.apply(console, arguments);
+        //    }
+        //}
+
+      
+    }
+
+    function searchApi() {
+
+        console.log("查询api");
+    }
+</script>
+
+<div id='header'>
+
+    <div class="swagger-ui-wrap">
+
+
+        <a id="logo">RESTful-API</a>
+        <form id='api_selector'>
+            <div class='input'><input placeholder="接口名称" id="input_baseUrl" name="baseUrl" type="text" /></div>
+            <div class='input' style="display:none"><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text" /></div>
+            @*<div class='input'><a id="explore" href="#">查询</a></div>*@
+            @*<div class='input'><input placeholder="" id="search" name="search" type="text" /></div>*@
+            <div class='input'><a id="search_a" href="#" class="search" onclick="searchApi()">查询</a></div>
+
+        </form>
+    </div>
+</div>
+<ul class="layui-nav layui-nav-tree" lay-filter="test">
+    <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
+    <li class="layui-nav-item layui-nav-itemed">
+        <a href="javascript:;">模块</a>
+        <dl class="layui-nav-child" id="modules_dd">
+             
+        </dl>
+    </li>
+</ul>
+<div id="message-bar" class="swagger-ui-wrap">
+
+</div>
+@*<ul id="demo" class="leftmargin_tree_home">1</ul>*@
+
+
+
+<div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+
+
+

@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<script>
+    var subgrid_table_id;
+    $(function () {
+        gridList();
+    })
+
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PPR/BasicInformation/GetPPRModels",
+            height: $(window).height() - 128,
+            colModel: [
+                { label: '主键', name: 'TABID', hidden: true },
+                { label: '模块名称', name: 'ModuleName', width: 80, align: 'left' },
+                { label: '模块路径', name: 'ModulePath', width: 120, align: 'left' },
+                { label: '创建时间', name: 'CreateTime', width: 80, align: 'left' },
+                { label: '备注', name: 'Remark', width: 80, align: 'left' }
+            ],
+            pager: "#gridPager",
+            sortname: 'CreationTime desc',
+            viewrecords: true,
+            subGrid: true,//开启子表格支持
+            caption: "   ",
+            //子表格的id；当子表格展开的时候，在主表格中会创建一个div元素用来容纳子表格，subgrid_id就是这个div的id
+            subGridRowExpanded: function (subgrid_id, row_id) {//子表格容器的id和需要展开子表格的行id
+                bindSubGrid(subgrid_id, row_id);
+            },
+            subGridOptions: {
+                "plusicon": "ui-icon-triangle-1-e",
+                "minusicon": "ui-icon-triangle-1-s",
+                "openicon": "ui-icon-arrowreturn-1-e",
+                //expand all rows on load
+                "expandOnLoad": true
+            },
+
+            onCellSelect: function (rowid, index, contents, event) {
+                onCell();//是一个控制按钮显示隐藏的方法
+            }
+        });
+        $("#btn_search").click(function () {
+            $gridList.jqGrid('setGridParam', {
+                postData: { PPRCode: $("#PPRCode").val() }
+            }).trigger('reloadGrid');
+        });
+    }
+
+
+
+
+    function bindSubGrid(subgrid_id, collectLineId) {
+        onCell();
+        var PPRCode = $("#gridList").jqGrid('getRowData', collectLineId).Code;
+        var status = $("#gridList").jqGrid('getRowData', collectLineId).StatusName;
+        subgrid_table_id = subgrid_id + "_t";//最终子表格的div的id是加了"_t"的 subgrid_table_id是全局变量：var subgrid_table_id;
+        $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table>");//这里是添加子表格div,id为subgrid_table_id
+        $("#" + subgrid_table_id).jqGrid(
+            {
+                url: "/PPR/BasicInformation/GetPSModels?PPRCode=" + PPRCode,
+                datatype: "json",
+                height: "auto",
+                colModel: [
+                    { label: '主键', name: 'Id', hidden: true },
+                    { label: '工艺编码', name: 'PPRCode', hidden: true },
+                    { label: '工序编码', name: 'Code', width: 80, align: 'left' },
+                    { label: '工序名称', name: 'Name', width: 80, align: 'left' },
+                    { label: '是否剔除', name: 'IsRemoved', width: 80, align: 'left', editable: true, edittype: "checkbox", editoptions: { value: "是:否" } },
+                    { label: '序列号', name: 'OrderIndex', width: 80, align: 'left', editable: true, editrules: { edithidden: true, required: true, number: true } },
+                    { label: '备注', name: 'Describe', width: 200, align: 'left' }
+                ],
+                rowNum: 200,
+                mtype: "post",
+                viewrecord: true,
+                subGrid: true,//开启子表格支持
+                //子表格的id；当子表格展开的时候，在主表格中会创建一个div元素用来容纳子表格，subgrid_id就是这个div的id
+                subGridRowExpanded: function (subgrid_id, row_id) {//子表格容器的id和需要展开子表格的行id
+                    bindSubGrid2(subgrid_id, row_id);
+                },
+                onCellSelect: function (rowid, index, contents, event) {
+                    $("#gridList").jqGrid('setSelection', collectLineId);//该工序的工艺选中
+                    subgrid_table_id = subgrid_id + "_t";
+                    $(".operate").animate({ "left": 0 }, 200);
+                    $("#NF-edit").hide();
+                    $("#NF-delete").hide();
+                    $("#NF-start").hide();
+                    $("#NF-stop").hide();
+                    $("#NF-process").hide();
+                    $("#NF-copy").hide();
+                    $("#NF-step").show();
+                    $("#NF-material").hide();
+                    $("#NF-measure").hide();
+                    setTimeout(function () {
+                        if (status == "新建") {
+                            $("#NF-step").attr("onclick", "btn_step();");
+                            $("#NF-step").css("color", "#333333 ");
+                        } else {
+                            $("#NF-step").removeAttr("onclick");
+                            $("#NF-step").css("color", "#CFCFCF ");
+                        }
+                    }, 30);
+                }
+            });
+    }
+</script>
+
+<div class="topPanel">
+
+
+</div>
+
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+
+</div>

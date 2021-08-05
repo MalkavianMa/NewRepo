@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script>
+    $(function () {
+        gridList(); keySearchText();
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            treeGrid: true,
+            treeGridModel: "adjacency",
+            ExpandColumn: "F_CreatorTime",
+            url: "/ModulesManage/ModulesInfo/GetAllModulesInfo",
+            height: $(window).height()-128,
+            enableHideToolBar: true,
+            colModel: [
+                { label: "主键", name: "TABID", hidden: true, key: true },
+                { label: '名称', name: 'ModuleName', width: 200, align: 'left' },
+               
+                { label: '模块路径', name: 'ModulePath', hidden: true, align: 'left' },
+                { label: '备注', name: 'Remark', width: 300, align: 'left' },
+                { label: 'PID', name: 'PID', hidden: true },
+                { label: '序号', name: 'F_SortCode', width: 80, align: 'left' },
+                {
+                    label: '创建时间', name: 'CreateTime', hidden: true, width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+            ],
+           
+            pager: '#gridpager',
+           
+            sortname: 'F_SortCode asc',
+            viewrecords: true
+        });
+
+        $("#btn_search").click(function () {
+            $gridList.jqGrid('setGridParam', {
+                postData: { keyword: $("#txt_keyword").val() },
+            }).trigger('reloadGrid');
+        });
+    }
+    function btn_add() {
+        $.modalOpen({
+            id: "Form",
+            title: "新增设备分组",
+            url: "/Equipment/EquipmentGroup/Form",
+            width: "450px",
+            height: "340px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    function btn_edit() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (keyValue == null) {
+            $.modalMsg("请选择一条记录修改！", "warning");
+            return;
+        }
+        $.modalOpen({
+            id: "Form",
+            title: "修改设备分组",
+            url: "/Equipment/EquipmentGroup/Form?keyValue=" + keyValue,
+            width: "450px",
+            height: "340px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    function btn_delete() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (keyValue == null) {
+            $.modalMsg("请选择一条记录删除！", "warning");
+            return;
+        }
+        $.deleteForm({
+            url: "/Equipment/EquipmentGroup/DeleteForm",
+            param: { keyValue: keyValue },
+            success: function () {
+                $.currentWindow().$("#gridList").resetSelection();
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+    function AllocateProperty() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        var pid = $("#gridList").jqGridRowValue().PID;
+        var projectID = $("#gridList").jqGridRowValue().ProjectID;
+
+        if (keyValue == null) {
+            $.modalMsg("请先选择一条记录！", "warning");
+            return;
+        }
+        if (!pid || pid == 0) {
+            $.modalMsg("请选择节点下的分项！", "warning");
+            return;
+        }
+        var index = window.name;
+        $.modalOpen({
+            id: "FormAllocateIndex",
+            title: "分配设备",
+            url: "/Equipment/EquipmentGroup/Equipment_Group_R_Index?objectclassid=" + keyValue + "&otype=add&projectID=" + projectID,
+            width: "1000px",
+            height: "800px",
+            btn: '',
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+
+
+    function ViewDevicesItem(id, projectID) {
+        if (!!id) {
+            var index = window.name;
+            $.modalOpen({
+                id: "ViewDevicesItem",
+                title: "已分配设备",
+                url: "/Equipment/EquipmentGroup/Equipment_Group_R_Index?objectclassid=" + id + "&otype=edit&mindex=" + index + "&projectID=" + projectID,
+                width: "1000px",
+                height: "800px",
+                btn: '',
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+
+    }
+
+
+</script>
+
+<div class="topPanel">
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group">
+                        <input id="txt_keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;">
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-add" authorize="yes" class="btn btn-primary" onclick="btn_add()"><i class="fa fa-plus"></i>新建设备分组</a>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改设备分组</a></li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除设备分组</a></li>
+                <li><a id="AllocateProperty" authorize="yes" onclick="AllocateProperty()"><i class="fa fa-th"></i>分配设备</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridpager"></div>
+
+</div>

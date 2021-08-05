@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>CYQ.Data</AssemblyName>
+    <RootNamespace>CYQ.Data</RootNamespace>
+    <PackageId>cyqdatacore</PackageId>
+    <Version>5.8.3.5</Version>
+    <Authors>路过秋天</Authors>
+    <Description>What's cyq.data ?： 1： It is an ORM framework. 2： It is a data access layer components. 3： It is a set of tools library. 开源地址：https://github.com/cyq1162/cyqdata</Description>
+    <Product>CYQ.Data 数据层(ORM)框架 V5 .NET Core 版本</Product>
+    <Company>路过秋天 （2020-07-22）</Company>
+    <Copyright>版权所有 (C) 路过秋天 2010-2030</Copyright>
+    <PackageProjectUrl>https://github.com/cyq1162/cyqdata</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReleaseNotes>596：MySql：修正tiny的几种类型处理(2020-04-30)
+597：XHtmlAction：增加对模板语法 &lt;%# %&gt; 内部执行js eval语法(2020-04-30)
+598：NetCore：由于597的原因，NETCore改成3.1(已优化回2.1）。(2020-04-30)
+599：因升级可视化调试工具【优化一些表格和Json数据转换相关】(2020-05-28)【V5.8.3.2】
+600：ConvertTool 增强数据类型转换(2020-06-03)
+601：Table 系列：内部优化(2020-06-03)
+602：Postgre 处理大小写兼容问题，增加IsPostgreLower配置项（默认false）(2020-07-01)
+603：MSSQL:兼容处理hierarchyid数据类型。(2020-07-13)</PackageReleaseNotes>
+    <PackageTags>CYQ.Data ORM ADO.NET</PackageTags>
+    <AssemblyVersion>5.8.3.5</AssemblyVersion>
+    <FileVersion>5.8.3.5</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\CYQ.Data.xml</DocumentationFile>
+    <DefineConstants>TRACE;NC21</DefineConstants>
+  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\Release\netcoreapp2.0\CYQ.Data.xml</DocumentationFile>
+		<DefineConstants>TRACE;NC31</DefineConstants>
+		
+	</PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="DotNetCore\CYQ.Data.Core\**" />
+    <Compile Remove="DotNetCore\System\Data\Common\**" />
+    <Compile Remove="单元测试\**" />
+    <Compile Remove="文档\**" />
+    <EmbeddedResource Remove="DotNetCore\CYQ.Data.Core\**" />
+    <EmbeddedResource Remove="DotNetCore\System\Data\Common\**" />
+    <EmbeddedResource Remove="单元测试\**" />
+    <EmbeddedResource Remove="文档\**" />
+    <None Remove="DotNetCore\CYQ.Data.Core\**" />
+    <None Remove="DotNetCore\System\Data\Common\**" />
+    <None Remove="单元测试\**" />
+    <None Remove="文档\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClearSVN.exe" />
+    <None Remove="CYQ.Data.suo" />
+    <None Remove="CYQ.Data.v11.suo" />
+    <None Remove="DotNetCore\使用说明.txt" />
+    <None Remove="LICENSE" />
+    <None Remove="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DynamicExpresso.Core" Version="2.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.1" />
+  </ItemGroup>
+
+</Project>

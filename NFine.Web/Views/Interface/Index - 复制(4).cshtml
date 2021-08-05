@@ -1,0 +1,412 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<script>
+    var subgrid_table_id;
+    $(function () {
+        gridList();
+    })
+
+    function gridList() {
+        //var $gridList = $("#gridList");
+        jQuery("#sg2").jqGrid({
+            url: "/ModulesManage/ModulesInfo/GetAllModulesInfo",
+            datatype: "json",
+            height: $(window).height() - 200,
+            colNames: ['主键', '模块名称', '路径', '创建时间', '备注'],
+            colModel: [
+                { label: '主键', name: 'TABID', index: 'TABID', hidden: true },
+                { label: '模块名称', name: 'ModuleName', index: 'ModuleName', width: 80, align: 'left' },
+                { label: '路径', name: 'ModulePath', index: 'ModulePath', width: 120, align: 'left' },
+                { label: '创建时间', name: 'CreateTime', index: 'CreateTime', width: 80, align: 'left' },
+                { label: '备注', name: 'Remark', index: 'Remark', width: 80, align: 'left' }
+            ],
+            rowNum: 8,
+            rowList: [8, 10, 20, 30],
+            pager: '#psg2',
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            //multiselect: true,
+            subGrid: true,
+            caption: " ",
+            // define the icons in subgrid
+            subGridOptions: {
+               // "plusicon": "glyphicon-plus",
+               // "minusicon": "glyphicon-minus",
+              //  "openicon": "glyphicon-share-alt",
+                //"plusicon": "fa fa-plus",
+                //"minusicon": "fa fa-minus",
+                //"openicon": "fa fa-share",
+
+                //expand all rows on load
+                "expandOnLoad": true
+            },
+            subGridRowExpanded: function (subgrid_id, row_id) {
+                bindSubGridController(subgrid_id, row_id);
+            }
+        });
+        jQuery("#sg2").jqGrid('navGrid', '#psg2', { add: false, edit: false, del: false, search: false, refresh: false })
+              .navButtonAdd("#psg2", {
+                caption: "添加模块",
+                title: "添加模块",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    btn_add();
+                },
+                position: "last"
+            })
+            .navButtonAdd("#psg2" , {
+                caption: "查看模块",
+                title: "查看模块",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    viewModule(row_id, subgrid_table_id);
+                },
+                position: "last"
+            })
+            .navButtonAdd("#psg2", {
+                caption: "修改模块",
+                title: "修改模块",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    editModule(row_id, subgrid_table_id);
+                },
+                position: "last"
+            })
+            .navButtonAdd("#psg2", {
+                caption: "删除模块",
+                title: "删除模块",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                     alert("删除模块！");
+                },
+                position: "last"
+            });
+    }
+
+
+
+    function bindSubGridController(subgrid_id, row_id) {
+
+        var subgrid_table_id, pager_id;
+        subgrid_table_id = subgrid_id + "_t";
+        pager_id = "p_" + subgrid_table_id;
+        console.log("bindSubGridController:" + subgrid_table_id);
+        $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
+        jQuery("#" + subgrid_table_id).jqGrid({
+            url: "/ControllerManage/TB_/GetControllerInfo?keyValue=" + row_id,
+            datatype: "json",
+            // colNames: ['No', 'Item', 'Qty', 'Unit', 'Line Total'],
+            colModel: [
+
+                { label: '主键', name: 'TABID', index: 'TABID', hidden: true },
+                { label: '所属模块主键', name: 'ModuleID', index: 'ModuleID', hidden: true },
+                { label: '路由名称', name: 'ControllerName', index: 'ControllerName', width: 80, align: 'left' },
+                { label: '路径', name: 'ControllerPath', index: 'ControllerPath', width: 120, align: 'left' },
+                { label: '创建时间', name: 'CareateTime', index: 'CareateTime', width: 80, align: 'left' },
+                { label: '备注', name: 'Remark', index: 'Remark', width: 80, align: 'left' }
+            ],
+            rowNum: 20,
+            pager: pager_id,
+            sortname: 'num',
+            sortorder: "asc",
+            // multiselect: true,
+            viewrecord: true,
+            subGrid: true,
+            subGridOptions: {
+
+                "expandOnLoad": true
+            },
+            subGridRowExpanded: function (subgrid_id, row_id) {
+                bindSubGridAPI(subgrid_id, row_id);
+            },
+            height: '100%'
+        });
+        jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, { edit: false, add: false, del: false, search: false, refresh: false })
+            .navButtonAdd("#" + pager_id, {
+                caption: "添加路由",
+                title: "新建一个API节点",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    addAPI(row_id)
+                },
+                position: "last"
+            })
+            .navButtonAdd("#" + pager_id, {
+                caption: "查看路由",
+                title: "查看路由内容",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    viewControl(row_id, subgrid_table_id);
+                },
+                position: "last"
+            })
+            .navButtonAdd("#" + pager_id, {
+                caption: "修改路由",
+                title: "修改路由",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    alert("修改API内容！");
+                },
+                position: "last"
+            })
+            .navButtonAdd("#" + pager_id, {
+                caption: "删除路由",
+                title: "删除API",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    btn_delete_Route(row_id, subgrid_table_id);
+                },
+                position: "last"
+            })
+
+
+
+
+    }
+
+
+
+
+
+    function bindSubGridAPI(subgrid_id, row_id) {
+        var subgrid_table_id, pager_id;
+        subgrid_table_id = subgrid_id + "_t";
+        pager_id = "p_" + subgrid_table_id;
+
+        console.log("bindSubGridAPI:" + subgrid_table_id);
+        $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
+        jQuery("#" + subgrid_table_id).jqGrid({
+            url: "/ControllerManage/TB_/GetControllerInfo?keyword=" + row_id,
+            datatype: "json",
+            // colNames: ['No', 'Item', 'Qty', 'Unit', 'Line Total'],
+            colModel: [
+
+                { label: '主键', name: 'TABID', index: 'TABID', hidden: true },
+                { label: '所属模块主键', name: 'ModuleID', index: 'ModuleID', hidden: true },
+                { label: '接口名称', name: 'ControllerName', index: 'ControllerName', width: 80, align: 'left' },
+                { label: '接口地址', name: 'ControllerPath', index: 'ControllerPath', width: 120, align: 'left' },
+                { label: '创建时间', name: 'CareateTime', index: 'CareateTime', width: 80, align: 'left' },
+                { label: '备注', name: 'Remark', index: 'Remark', width: 80, align: 'left' }
+            ],
+            rowNum: 20,
+            pager: pager_id,
+            sortname: 'num',
+            sortorder: "asc",
+            // multiselect: true,
+            viewrecord: true,
+
+            height: '100%'
+        });
+        jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, { edit: false, add: false, del: false, search: false, refresh: false })
+            .navButtonAdd("#" + pager_id, {
+                caption: "添加",
+                title: "新建一个API节点",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    addAPI(row_id)
+                },
+                position: "last"
+            })
+            .navButtonAdd("#" + pager_id, {
+                caption: "查看",
+                title: "查看API内容",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    addAPI(row_id)
+                },
+                position: "last"
+            })
+            .navButtonAdd("#" + pager_id, {
+                caption: "修改",
+                title: "修改API内容",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    addAPI(row_id)
+                },
+                position: "last"
+            })
+            .navButtonAdd("#" + pager_id, {
+                caption: "删除",
+                title: "删除API",
+                buttonicon: "",//glyphicon-plus
+                onClickButton: function () {
+                    addAPI(row_id)
+                },
+                position: "last"
+            })
+
+
+
+    }
+
+
+    //控制器详情查看
+    function viewControl(row_id, subgrid_table_id) {
+        
+
+        var keyValue = $("#" + subgrid_table_id).jqGridRowValue().TABID;
+        if (!keyValue) {
+            $.modalMsg("请选择一条记录！", "warning");
+            return;
+        }
+        var b = window.location.protocol + "//" + window.location.host + "/ControllerManage/TB_/Form?keyValue=" + row_id+"&oType=view";
+        // alert(a);
+        alert(b);
+        // alert(row_id);
+        //$.modalOpen({
+        //    id: "Form",
+        //    title: "新增控制器",
+        //    url: "/ControllerManage/TB_/Form",
+        //    width: "450px",
+        //    height: "340px",
+        //    callBack: function (iframeId) {
+        //        top.frames[iframeId].submitForm();
+        //    }
+        //});
+        window.open(b);
+
+
+    }
+
+
+
+    function addAPI(row_id) {
+       // var a = window.location.href;
+        //var b = window.location.protocol + "//" + window.location.host + "/ControllerManage/TB_/Form?ModuleID=" + row_id;
+       // alert(a);
+      //  alert(b);
+      // alert(row_id);
+             //   window.open(b);
+
+        $.modalOpen({
+            id: "Form",
+            title: "新增控制器",
+            url: "/ControllerManage/TB_/Form?ModuleID=" + row_id,
+            width: "800px",
+            height: "800px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+
+    }
+
+    //新增模块
+    function btn_add() {
+
+        //var keyValue = $("#sg2").jqGridRowValue().TABID;
+
+       // if (!!keyValue) {
+            $.modalOpen({
+                id: "Form",
+                title: "新增模块",
+                url: "/ModulesManage/ModulesInfo/Form",
+                width: "450px",
+                height: "340px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+       // }
+
+
+
+    }
+    //查看模块
+    function viewModule(row_id, subgrid_table_id) {
+        $.modalOpen({
+            id: "viewModuleForm",
+            title: "查看模块",
+            url: "/ModulesManage/ModulesInfo/Form?oType=view&keyValue=" + row_id,
+            width: "800px",
+            height: "800px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    //修改模块
+    function editModule(row_id, subgrid_table_id) {
+        $.modalOpen({
+            id: "editModuleForm",
+            title: "修改模块",
+            url: "/ModulesManage/ModulesInfo/Form?keyValue=" + row_id,
+            width: "800px",
+            height: "800px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+
+    //删除模块
+    function deleteModule(row_id, subgrid_table_id) {
+
+    }
+
+
+
+    //删除路由
+    function btn_delete_Route(row_id, subgrid_table_id) {
+
+        //获取选中值
+        var keyValue = $("#" + subgrid_table_id).jqGridRowValue().TABID;
+        if (!keyValue) {
+            $.modalMsg("请选择一条记录！", "warning");
+            return;
+        }
+
+        $.deleteForm({
+            url:  "/ControllerManage/TB_/DeleteRoute?keyword=" + row_id,
+            param: { keyValue: keyValue },
+            success: function () {
+                debugger;
+                $.reload();
+              //   $("#gridList").resetSelection();
+               //  $("#gridList").trigger("reloadGrid");
+               // $.currentWindow().reload();
+                
+            }
+        }, $("#" + subgrid_table_id).jqGridRowValue().ControllerName)
+
+
+    }
+
+
+    //删除接口
+
+
+
+    //右侧的新建可以根据选中情况   选中最后的数据类型为接口  则新建接口，路由则新建路由。
+    //选中情况的处理问题，由于不确定是选中哪个子级表格，是否需要增加全局变量处理?
+</script>
+
+<div class="topPanel">
+
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-add" class="btn btn-primary" onclick="btn_add()"><i class="fa fa-plus"></i>新建</a>
+            <a id="NF-edit" class="btn btn-primary" onclick=""><i class="fa fa-edit"></i>修改</a>
+            <a id="NF-delete" class="btn btn-primary" onclick=""><i class="fa fa-trash-o"></i>删除</a>
+        </div>
+        <div class="operate">
+
+            <a href="javascript:;" class="close"></a>
+        </div>
+    </div>
+</div>
+
+<div class="gridPanel">
+    <table id="sg2"></table>
+    <div id="psg2"></div>
+
+</div>
+
+

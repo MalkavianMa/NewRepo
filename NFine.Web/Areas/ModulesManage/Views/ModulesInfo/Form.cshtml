@@ -1,0 +1,70 @@
+﻿ @{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var oType = $.request("oType");
+    $(function () {
+        if (!!keyValue) {
+            $.ajax({
+                url: "/ModulesManage/ModulesInfo/GetSingleInfo",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                }
+            });
+        }
+        if (oType =="view") {
+            $('input').attr("disabled", "disabled")
+            $('textarea').attr("disabled", "disabled")
+        }
+
+    });
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        if (oType == "view") {
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+      //  postData["F_ItemId"] = itemId;
+        $.submitForm({
+            url: "/ModulesManage/ModulesInfo/SubmitForm?keyValue=" + keyValue,
+            param: postData,
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+
+<form id="form1">
+    <div style="padding-top: 20px; margin-right: 20px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">模块名称</th>
+                <td class="formValue">
+                    <input id="ModuleName" name="ModuleName" type="text" class="form-control required" placeholder="请输入名称" />
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">模块路径</th>
+                <td class="formValue">
+                    <input id="ModulePath" name="ModulePath" type="text" class="form-control required" placeholder="模块路径" />
+                </td>
+            </tr>
+                  
+            <tr>
+                <th class="formTitle" valign="top" style="padding-top: 5px;">备注
+                </th>
+                <td class="formValue">
+                    <textarea id="Remark" name="Remark" class="form-control" style="height: 60px;"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

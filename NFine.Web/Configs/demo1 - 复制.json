@@ -1,0 +1,92 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "汉化版Swagger-UI"
+  },
+  "host": "petstore.swagger.io",
+  "basePath": "/v2",
+  "tags": [
+    {
+      "name": "pet",
+      "description": "有关你宠物的所有事情！"
+    },
+    {
+      "name": "store",
+      "description": "访问宠物商店订单！"
+    }
+  ],
+  "paths": {
+    "/接口名": {
+      "post": {
+        "tags": [
+          "这是控制器名pet"
+
+        ],
+        "summary": "添加一个=",
+        "description": "这里注意事项",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body1",
+            "description": "描述",
+            "required": true,
+            "default": "1",
+            "schema": {
+              "$ref": "json"
+            }
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "描述2222",
+            "required": true,
+            "default": "22221",
+            "schema": {
+              "$ref": "json"
+            }
+          }
+        ],
+
+        "responses": {
+          "responseBody": "1111"
+         
+        }
+
+
+
+      }
+    },
+    "/store": {
+      "get": {
+        "tags": [
+
+          "store"
+        ],
+        "summary": " d",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "描述",
+            "required": true,
+            "default": "122"
+          }
+        ]
+      }
+    }
+  },
+  "schemes": "http"
+}

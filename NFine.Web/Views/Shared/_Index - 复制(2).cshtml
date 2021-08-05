@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/css/framework-font.css" rel="stylesheet" />
+    <link href="~/Content/css/framework-theme.css" rel="stylesheet" />
+    <script src="~/Content/js/jquery/jquery-2.1.1.min.js"></script>
+    <script src="~/Content/js/bootstrap/bootstrap.js"></script>
+    <link href="~/Content/js/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Content/js/jqgrid/jqgrid.min.js"></script>
+    <link href="~/Content/js/jqgrid/jqgrid.css" rel="stylesheet" />
+    <script src="~/Content/js/jqgrid/grid.locale-cn.js"></script>
+    <link href="~/Content/css/framework-ui.css" rel="stylesheet" />
+    <script src="~/Content/js/framework-ui.js"></script>
+    <script src="~/Content/js/dialog/dialog.js"></script>
+    <link href="~/Content/css/home/index.css" rel="stylesheet" />
+    <link href="~/Content/js/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        /*.function-menus div {
+            border: solid 1px blue;
+            height: 100%;
+        }
+
+        .selectmainmenu {
+            background-color: #2f469f;
+        }*/
+        .layui-nav .layui-nav-item {
+            height: 50px !important;
+        }
+    </style>
+    <script src="~/Content/js/layui/layui.js"></script>
+    <script>
+        layui.use('element', function () {
+            var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+
+            //监听导航点击
+            element.on('nav(demo)', function (elem) {
+                //console.log(elem)
+                layer.msg(elem.text());
+            });
+        });
+    </script>
+</head>
+<body>
+    @RenderBody()
+    @Html.AntiForgeryToken()
+</body>
+</html>

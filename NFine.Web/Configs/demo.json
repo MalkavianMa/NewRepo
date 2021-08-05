@@ -1,0 +1,82 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "swagger-ui的汉化版本",
+    "version": "1.0.0",
+    "title": "汉化版Swagger-UI",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "helei5200@126.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "king": {
+
+      "name": "test",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+    }
+
+  },
+  
+  "host": "petstore.swagger.io",
+  "basePath": "/v2",
+  "tags": [
+    {
+      "name1": "pet",
+      "description1": "有关你宠物的所有事情！",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name1": "store",
+      "description": "访问宠物商店订单！"
+    },
+    {
+      "name": "user",
+      "description1": "操作用户相关！",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+
+
+    "/pet测试": {
+      "post": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "添加一个新宠物到商店！",
+        "description": "",
+
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Pet object that needs to be added to the store",
+            "required": true 
+
+          }
+        ]
+      } 
+    }
+  }
+}

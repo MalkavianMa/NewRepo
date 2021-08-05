@@ -1,0 +1,94 @@
+.wrapper {
+    background-image: url(../../img/login/login-bg.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.form-container {
+    margin: 0 auto;
+    max-width: 420px;
+    background-image: url(../../img/login/login-panel-border.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color: transparent;
+    border: none;
+    padding:40px;
+}
+form.form {
+    background-color: white;
+    padding: 40px 40px 10px;
+    border-radius:0;
+}
+
+.container .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .container .logo h1 {
+        text-shadow: none;
+        font-size: 50px;
+        padding-bottom: 60px;
+    }
+
+.logo .logo-img {
+    width: 110px;
+    height: auto;
+    text-align: center;
+    vertical-align: middle;
+    margin-right: 20px;
+}
+
+.container .logo {
+    padding-left: 0;
+}
+
+.container {
+     
+    max-width: 600px;
+}
+
+form i {
+    position: relative;
+    top:0;
+    margin:auto 0;
+    height:auto;
+}
+
+    
+form i::after {
+    position: absolute;
+    content: " ";
+    right: -10px;
+    width: 1px;
+    height: 20px;
+    background-color: #CCCCCC;
+}
+form.form input {
+    border:none;
+    margin-bottom:0;
+}
+.form .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    
+
+}
+.form-input-group {
+    border: solid 1px #CCCCCC;
+    padding: 0 15px;
+    border-radius: 5px;
+    background-color: white;
+}
+form.form input.verify-code {
+    border: solid 1px #CCCCCC;
+}
+
+form button {
+    background-color: #43BCFB;
+}

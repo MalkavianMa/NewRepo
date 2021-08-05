@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+
+
+
+<script src="~/Content/Swagger UI_files/swagger-ui-bundle.js" charset="UTF-8"></script>
+<script src="~/Content/Swagger UI_files/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+<script src="~/Content/swaggerZh/translator.js"></script>
+<script src="~/Content/swaggerZh/zh-CN.js"></script>
+<script>
+    window.onload = function () {
+
+        // Begin Swagger UI call region
+        const ui = SwaggerUIBundle({
+            "dom_id": "#swagger-ui",
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                // SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout",
+            validatorUrl: "https://validator.swagger.io/validator",
+            url: "http://localhost:1852/Configs/swagger.json",
+        })
+
+
+        // End Swagger UI call region
+
+
+        window.ui = ui;
+    };
+</script>
+
+<div id="swagger-ui">
+
+</div>
+
+
+
+
+
