@@ -297,16 +297,19 @@ namespace NFine.Web.Areas.ControllerManage.Controllers
         private object JsonSwaggerSearch(string keyValue)
         {
             //查询api信息的DataTable
-            DataTable tableApiInfo = controllerManageApp.GetFormDataTable_Api(keyValue);
+            // DataTable tableApiInfo = controllerManageApp.GetFormDataTable_Api(keyValue);
 
 
             //查询模块信息的dataTable
-            DataTable tableModule = controllerManageApp.GetFormData_Module(keyValue);
+            // DataTable tableModule = controllerManageApp.GetFormData_Module(keyValue);
 
             //控制器信息的dataTable
-            DataTable dataTable = controllerManageApp.GetFormDataTable(keyValue);
+            // DataTable dataTable = controllerManageApp.GetFormDataTable(keyValue);
 
-          
+            DataTable infoJion = controllerManageApp.GetInfoApiKey(keyValue);
+
+
+
             dynamic infoMain = new ExpandoObject();
             dynamic tags = new ExpandoObject();
             // dynamic paths = new ExpandoObject();
@@ -333,7 +336,7 @@ namespace NFine.Web.Areas.ControllerManage.Controllers
 
             #region sw主题信息
 
-            var title_var = tableModule?.AsEnumerable();
+            var title_var = infoJion?.AsEnumerable();
             //标题显示模块名
             infoDetail.title = title_var.First().Field<string>("ModuleName");//"汉化版Swagger-UI";
 
@@ -348,7 +351,7 @@ namespace NFine.Web.Areas.ControllerManage.Controllers
 
             #region tags控制器路由信息
 
-            foreach (DataRow item in dataTable.Rows)
+            foreach (DataRow item in infoJion.Rows)
             {
                 tags = new ExpandoObject();
                 if (item["ControllerName"] != null)
@@ -382,7 +385,7 @@ namespace NFine.Web.Areas.ControllerManage.Controllers
             //该字典用于直接操作paths的属性
             IDictionary<string, object> dict_path = paths;
 
-            foreach (DataRow item in tableApiInfo.Rows)
+            foreach (DataRow item in infoJion.Rows)
             {
                 paraApiList = new List<dynamic>();//list一个入参一个出参
                 apiType = new ExpandoObject();

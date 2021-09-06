@@ -30996,10 +30996,12 @@ SwaggerUi.Views.HeaderView = Backbone.View.extend({
       e.preventDefault();
     }
 
-    this.trigger('update-swagger-ui', {
-      url: $('#input_baseUrl').val(),
-      apiKey: $('#input_apiKey').val()
-    });
+    //alert("回车");
+      searchApi();
+    //this.trigger('update-swagger-ui', {
+    //  url: $('#input_baseUrl').val(),
+    //  apiKey: $('#input_apiKey').val()
+    //});
   },
 
   update: function(url, apiKey, trigger){

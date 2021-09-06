@@ -249,6 +249,37 @@ namespace NFine.Application.ControllerManage
 
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public DataTable   GetInfoApiKey(string  key)
+        {
+            string sql = $@"select     tbm.TABID tbmID,tbm.ModulePath,tbm.ModuleName,tbc.ControllerPath,tbc.TABID  as tcID,tbc.ControllerName,tba.*     from  
+              tb_action    tba     
+             left  join  TB_Controller    tbc  on  tbc.TABID=tba.ControllerID
+             left join    TB_Module tbm  on tbc.ModuleID = tbm.TABID
+              where  1=1  and(   tba.ActionName  like  '%{key}%'     or     tba.Summary like '%{key}%' )  ";
+            DataTable table = new DataTable();
+            using (MProc proc = new MProc(sql))
+            {
+                table = proc.ExeMDataTable()?.ToDataTable();
+            }
+            return table;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="object_ClassEntity"></param>
+        /// <param name="keyValue"></param>
+
+
+
         public void SubmitForm(Controller_Entity object_ClassEntity, string keyValue)
         {
             if (string.IsNullOrEmpty(keyValue))
